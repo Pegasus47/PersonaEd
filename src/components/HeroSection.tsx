@@ -8,7 +8,6 @@ import { Link } from "react-router-dom";
 const HeroSection: React.FC = () => {
   return (
     <div className="relative overflow-hidden">
-      {/* Animated background blur elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute -top-20 -left-20 w-72 h-72 bg-purple-500 rounded-full opacity-20 blur-3xl"
@@ -83,7 +82,11 @@ const HeroSection: React.FC = () => {
           >
             <div className="relative bg-background/50 backdrop-blur-sm p-6 rounded-xl border shadow-lg">
               <div className="aspect-video relative rounded-lg overflow-hidden shadow-md mb-4 bg-muted flex items-center justify-center">
-                <p className="text-center text-muted-foreground">Interactive learning experience</p>
+              <img 
+                src="/src/assets/image.png"
+                alt="Interactive learning experience"
+                className="w-full h-full object-cover"
+              />
               </div>
               <div className="flex gap-2 mb-3">
                 {[1, 2, 3, 4].map((i) => (
