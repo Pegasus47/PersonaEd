@@ -8,27 +8,31 @@ import { Link } from "react-router-dom";
 const characters = [
   {
     id: 1,
-    name: "Professor Maxwell",
-    specialty: "Science & Physics",
+    name: "Harry Potter",
+    image: "src/assets/np.jpg",
     color: "bg-blue-500",
+    speciality: null,
   },
   {
     id: 2,
-    name: "Aria the Artist",
-    specialty: "Arts & Humanities",
+    name: "Star Wars",
+    image: "src/assets/images.jpeg",
     color: "bg-purple-500",
+    speciality: null,
   },
   {
     id: 3,
-    name: "Tech Wizard",
-    specialty: "Computer Science",
+    name: "Marvel Universe",
+    image: "src/assets/marvel.jpeg",
     color: "bg-green-500",
+    speciality: null,
   },
   {
     id: 4,
-    name: "Historian Helena",
-    specialty: "History & Culture",
+    name: "DC Universe",
+    image: "src/assets/dc.jpeg",
     color: "bg-amber-500",
+    speciality: null,
   },
 ];
 
@@ -55,13 +59,14 @@ const CharacterPreview: React.FC = () => {
             <Card className="overflow-hidden h-full border hover:shadow-lg transition-all duration-300">
               <div className={`${character.color} h-3`}></div>
               <CardContent className="p-6">
-                <div className="aspect-square rounded-full overflow-hidden mb-4 mx-auto border-4 border-background shadow-lg w-28 h-28">
-                  <div className={`w-full h-full ${character.color} opacity-70 flex items-center justify-center text-white text-2xl font-bold`}>
-                    {character.name.charAt(0)}
-                  </div>
-                </div>
+              <div className="aspect-square rounded-full overflow-hidden mb-4 mx-auto border-4 border-background shadow-lg w-28 h-28 bg-white">
+                <div
+                  className="w-full h-full rounded-full bg-cover bg-center"
+                  style={{ backgroundImage: `url(${character.image})` }}
+                ></div>
+              </div>                
                 <h3 className="text-xl font-bold text-center mb-1">{character.name}</h3>
-                <p className="text-center text-muted-foreground mb-4">{character.specialty}</p>
+                <p className="text-center text-muted-foreground mb-4">{character.speciality}</p>
                 <Button className="w-full" variant="outline" asChild>
                   <Link to={`/characters/${character.id}`}>Choose Character</Link>
                 </Button>

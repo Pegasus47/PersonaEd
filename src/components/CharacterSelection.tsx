@@ -85,10 +85,15 @@ const CharacterSelection: React.FC = () => {
                 transition={{ delay: index * 0.1 }}
                 className="w-full max-w-xs"
               >
-                <Link 
+                {/* <Link 
                   to={`/learn/${character.name.toLowerCase().replace(" ", "-")}`}
                   className="block h-full"
-                >
+                > */}
+
+                  <Link 
+                    to={`/chat?character=${encodeURIComponent(character.name)}`}
+                    className="block h-full"
+>
                   <Card className="overflow-hidden h-full border hover:shadow-xl transition-all duration-300 group cursor-pointer">
                     <div className="relative aspect-[3/4]">
                       <img
