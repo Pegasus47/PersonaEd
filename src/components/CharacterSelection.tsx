@@ -47,7 +47,6 @@ const CharacterSelection: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading delay
     const timer = setTimeout(() => setIsLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
@@ -59,7 +58,7 @@ const CharacterSelection: React.FC = () => {
   if (isLoading) return <Spinner />;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div >
       <NavigationHeader />
 
       <div className="container mx-auto px-6 py-24 flex-grow">
