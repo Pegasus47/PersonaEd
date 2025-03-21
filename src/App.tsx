@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "./LandingPage";
 import CharacterSelection from "./components/CharacterSelection";
 import CommandSection from "./components/CommandSection";
-
+import ExplanationPage from "./CharacterDialogues";
 const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -11,6 +11,7 @@ const App: React.FC = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/characters" element={<CharacterSelection />} />
         <Route path="/chat" element={<CommandSection />} />
+        <Route path="/explain" element={<ExplanationPage />} />
       </Routes>
     </BrowserRouter>
   );
