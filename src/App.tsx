@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "./LandingPage";
-import CharacterSelection from "./CharacterSelection";
+import CharacterSelection from "./components/CharacterSelection";
 
 const App: React.FC = () => {
   return (
