@@ -3,7 +3,7 @@ import React from "react";
 import { ThemeProvider } from "./components/ThemeProvider";
 import NavigationHeader from "./components/NavigationHeader";
 import HeroSection from "./components/HeroSection";
-import CommandSection from "./components/CommandSection";
+//import CommandSection from "./components/CommandSection";
 import FeaturesSection from "./components/FeaturesSection";
 import CharacterPreview from "./components/CharacterPreview";
 import CallToAction from "./components/CallToAction";
@@ -16,7 +16,6 @@ const LandingPage: React.FC = () => {
         <NavigationHeader />
         <main className="flex-grow">
           <HeroSection />
-          <CommandSection />
           <FeaturesSection />
           <CharacterPreview />
           <CallToAction />

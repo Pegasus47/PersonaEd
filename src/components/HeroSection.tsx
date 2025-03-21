@@ -64,7 +64,7 @@ const HeroSection: React.FC = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button size="lg" className="gap-2" asChild>
-                <Link to="/characters">
+                <Link to="/chat">
                   Get Started <ChevronRight className="h-4 w-4" />
                 </Link>
               </Button>

@@ -1,20 +1,19 @@
-// CommandSection.tsx
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Upload, FileText, Send } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Send, Upload, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import NavigationHeader from "./NavigationHeader";
 
 const CommandSection: React.FC = () => {
-  const [command, setCommand] = useState("");
+  const [input, setInput] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const navigate = useNavigate();
 
-  const handleCommandChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCommand(e.target.value);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,102 +22,83 @@ const CommandSection: React.FC = () => {
     }
   };
 
-  const handleProceed = () => {
+  const handleSubmit = () => {
+    // Process input or file
     navigate("/characters");
   };
 
   return (
-    <div className="container mx-auto px-6 py-16">
+    <div>
+      <NavigationHeader />
+
+      <div className="container mx-auto px-4 py-12 max-w-3xl">
+      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="max-w-3xl mx-auto"
       >
         <h2 className="text-3xl font-bold text-center mb-2">Start Your Learning Journey</h2>
         <p className="text-center text-muted-foreground mb-8">
-          Enter a command or upload a PDF, then choose a character to learn from!
+          Enter a command or upload a PDF to begin your personalized learning experience.
         </p>
 
-        <Card className="backdrop-blur-sm bg-background/80 border shadow-lg">
-          <CardHeader>
-            <CardTitle>Choose Your Learning Material</CardTitle>
-            <CardDescription>
-              We'll transform your content into an interactive learning experience
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="command" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="command">Command</TabsTrigger>
-                <TabsTrigger value="upload">Upload PDF</TabsTrigger>
-              </TabsList>
-              <TabsContent value="command">
-                <div className="space-y-4">
-                  <div className="relative">
-                    <Input
-                      type="text"
-                      value={command}
-                      onChange={handleCommandChange}
-                      placeholder="Type your learning command here..."
-                      className="pr-10"
-                    />
-                    <Send className="h-4 w-4 absolute right-3 top-3 text-muted-foreground" />
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Example: "Teach me about quantum physics" or "Explain the history of Renaissance art"
-                  </p>
-                </div>
-              </TabsContent>
-              <TabsContent value="upload">
-                <div className="space-y-4">
-                  <label
-                    htmlFor="pdf-upload"
-                    className="border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 transition-colors"
-                  >
-                    <Upload className="h-10 w-10 text-muted-foreground mb-2" />
-                    <p className="text-sm font-medium">
-                      {file ? file.name : "Click to upload or drag and drop"}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      PDF (up to 10MB)
-                    </p>
-                    <Input
-                      id="pdf-upload"
-                      type="file"
-                      accept=".pdf"
-                      onChange={handleFileChange}
-                      className="hidden"
-                    />
-                  </label>
-                  {file && (
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-muted">
-                      <FileText className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm truncate">{file.name}</span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="ml-auto"
-                        onClick={() => setFile(null)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-          <CardFooter className="flex justify-end">
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-              <Button onClick={handleProceed} size="lg">
-                Choose Character
+        <Card className="backdrop-blur-sm bg-background/80 border shadow-lg p-4">
+          <div className="relative">
+            <Input
+              type="text"
+              value={input}
+              onChange={handleInputChange}
+              placeholder="Type your learning command or question here..."
+              className="pr-24 py-6 text-lg"
+            />
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
+              <label htmlFor="file-upload" className="cursor-pointer">
+                <Upload className="h-6 w-6 text-muted-foreground hover:text-primary transition-colors" />
+              </label>
+              <Input
+                id="file-upload"
+                type="file"
+                accept=".pdf"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              <Button 
+                onClick={handleSubmit} 
+                size="icon"
+                className="rounded-full"
+              >
+                <Send className="h-4 w-4" />
               </Button>
-            </motion.div>
-          </CardFooter>
+            </div>
+          </div>
+          {file && (
+            <div className="mt-4 flex items-center gap-2 p-2 rounded-lg bg-muted">
+              <span className="text-sm truncate flex-grow">{file.name}</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setFile(null)}
+                className="p-1"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
         </Card>
+
+        <div className="mt-8 text-center text-sm text-muted-foreground">
+          <p>Examples:</p>
+          <ul className="mt-2 space-y-2">
+            <li>"Explain quantum entanglement in simple terms"</li>
+            <li>"What are the key events of the Renaissance period?"</li>
+            <li>"How does photosynthesis work?"</li>
+          </ul>
+        </div>
       </motion.div>
     </div>
+    </div>
+    
   );
 };
 
