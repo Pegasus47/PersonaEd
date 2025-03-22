@@ -1,50 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import NavigationHeader from "@/components/NavigationHeader";
-
-const Spinner: React.FC = () => (
-  <div className="flex justify-center items-center h-12 w-12">
-    <svg
-      className="animate-spin h-8 w-8 text-primary"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-      />
-    </svg>
-  </div>
-);
-
-const Option: React.FC<{
-  option: string;
-  isSelected: boolean;
-  onSelect: () => void;
-}> = ({ option, isSelected, onSelect }) => (
-  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-    <Card
-      className={`p-4 cursor-pointer transition-all ${
-        isSelected ? "border-blue-500 bg-primary/10" : "hover:border-primary/50"
-      }`}
-      onClick={onSelect}
-    >
-      <p className="text-lg">{option}</p>
-    </Card>
-  </motion.div>
-);
+import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 
 const QuizPage: React.FC = () => {
   const quizData = JSON.parse(localStorage.getItem("quiz") || "null") || [
@@ -77,7 +36,9 @@ const QuizPage: React.FC = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [score, setScore] = useState(0);
   const [showResults, setShowResults] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [answers, setAnswers] = useState<
+    { question: string; selected: string; correct: string }[]
+  >([]);
 
   const handleAnswerSelect = (answer: string) => {
     setSelectedAnswer(answer);
@@ -86,31 +47,37 @@ const QuizPage: React.FC = () => {
   const handleNext = () => {
     if (!selectedAnswer) return;
 
-    if (selectedAnswer === quizData[currentQuestion]?.correct_answer) {
-      setScore((prev) => prev + 1);
-    }
+    const isCorrect =
+      selectedAnswer === quizData[currentQuestion].correct_answer;
+    if (isCorrect) setScore((prev) => prev + 1);
+
+    setAnswers((prev) => [
+      ...prev,
+      {
+        question: quizData[currentQuestion].question,
+        selected: selectedAnswer,
+        correct: quizData[currentQuestion].correct_answer,
+      },
+    ]);
 
     setSelectedAnswer(null);
 
-    setCurrentQuestion((prev) => {
-      if (prev < quizData.length - 1) return prev + 1;
+    if (currentQuestion < quizData.length - 1) {
+      setCurrentQuestion((prev) => prev + 1);
+    } else {
       setShowResults(true);
-      return prev;
-    });
+    }
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
-        <Spinner />
-      </div>
-    );
-  }
+  const data = [
+    { name: "Correct", value: score },
+    { name: "Incorrect", value: quizData.length - score },
+  ];
+  const COLORS = ["#00C49F", "#FF4444"];
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-primary/10 to-secondary/10">
       <NavigationHeader />
-
       <div className="container mx-auto px-6 py-12 flex-grow">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -130,18 +97,21 @@ const QuizPage: React.FC = () => {
                   <h1 className="text-3xl font-bold mb-8">
                     {quizData[currentQuestion]?.question}
                   </h1>
-
                   <div className="grid gap-4 mb-8">
                     {quizData[currentQuestion]?.options.map((option: any) => (
-                      <Option
+                      <Card
                         key={option}
-                        option={option}
-                        isSelected={selectedAnswer === option}
-                        onSelect={() => handleAnswerSelect(option)}
-                      />
+                        className={`p-4 cursor-pointer transition-all ${
+                          selectedAnswer === option
+                            ? "border-blue-500 bg-primary/10"
+                            : "hover:border-primary/50"
+                        }`}
+                        onClick={() => handleAnswerSelect(option)}
+                      >
+                        <p className="text-lg">{option}</p>
+                      </Card>
                     ))}
                   </div>
-
                   <div className="flex justify-end">
                     <Button
                       onClick={handleNext}
@@ -165,12 +135,65 @@ const QuizPage: React.FC = () => {
                 <p className="text-2xl mb-8">
                   You scored {score} out of {quizData.length}
                 </p>
-                <div className="flex justify-center gap-4">
+                <div className="flex justify-center">
+                  <PieChart width={300} height={300}>
+                    <Pie
+                      data={data}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={100}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {data.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </div>
+                <div className="mt-8 text-left">
+                  <h2 className="text-2xl font-semibold mb-4">
+                    Results Summary:
+                  </h2>
+                  {answers.map((item, index) => (
+                    <div
+                      key={index}
+                      className={`p-3 my-2 rounded ${
+                        item.selected === item.correct
+                          ? "bg-green-100"
+                          : "bg-red-100"
+                      }`}
+                    >
+                      <p className="font-medium">Q: {item.question}</p>
+                      <p
+                        className={`font-semibold ${
+                          item.selected === item.correct
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        Your Answer: {item.selected}
+                      </p>
+                      {item.selected !== item.correct && (
+                        <p className="text-gray-600">
+                          Correct Answer: {item.correct}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex justify-center mt-8">
                   <Button
                     onClick={() => {
                       setCurrentQuestion(0);
                       setScore(0);
                       setShowResults(false);
+                      setAnswers([]);
                       setSelectedAnswer(null);
                     }}
                     className="rounded-full px-8 py-4 text-lg"
