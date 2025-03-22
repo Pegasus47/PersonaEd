@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+//import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -15,13 +15,16 @@ interface Dialogue {
 }
 
 const characterImages: Record<string, string> = {
-  "Harry Potter": "src/assets/harryPotter.png",
-  Hermione: "src/assets/hermione.png",
+  "Harry Potter": "src/assets/harryPotterImg.png",
+  Hermione: "src/assets/hermioneIMG.png",
 };
 
 const ExplanationPage: React.FC = () => {
-  const [searchParams] = useSearchParams();
-  const selectedCharacter = searchParams.get("character") || "Harry Potter";
+  //const [searchParams] = useSearchParams();
+  //const selectedCharacter = searchParams.get("character") || "Harry Potter";
+
+  const selectedCharacter = localStorage.getItem("selectedCharacter")|| "Harry Potter";
+
   const topic = localStorage.getItem("topic") || "default";
   const [dialogues, setDialogues] = useState<Dialogue[]>([]);
   const [dialogueIndex, setDialogueIndex] = useState(0);
@@ -93,7 +96,7 @@ const ExplanationPage: React.FC = () => {
     setDialogueIndex((prev) => Math.max(prev - 1, 0));
 
   const currentDialogue = dialogues[dialogueIndex];
-  const isLeft = currentDialogue?.speaker === "Harry Potter";
+  const isLeft = currentDialogue?.speaker === selectedCharacter;
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">

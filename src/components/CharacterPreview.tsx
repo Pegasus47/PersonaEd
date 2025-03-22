@@ -16,14 +16,14 @@ const characters = [
   {
     id: 2,
     name: "Star Wars",
-    image: "src/assets/images.jpeg",
+    image: "src/assets/starwars.jpg",
     color: "bg-purple-500",
     speciality: null,
   },
   {
     id: 3,
     name: "Marvel Universe",
-    image: "src/assets/marvel.jpeg",
+    image: "src/assets/marvel.jpg",
     color: "bg-green-500",
     speciality: null,
   },

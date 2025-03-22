@@ -15,12 +15,12 @@ const characters = [
   },
   {
     name: "Star Wars",
-    image: "src/assets/images.jpeg",
+    image: "src/assets/starwars.jpg",
     specialty: "Galactic History",
   },
   {
     name: "Marvel Universe",
-    image: "src/assets/marvel.jpeg",
+    image: "src/assets/marvel.jpg",
     specialty: "Superhero Science",
   },
   {
