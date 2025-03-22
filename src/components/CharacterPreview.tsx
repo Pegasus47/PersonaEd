@@ -68,7 +68,7 @@ const CharacterPreview: React.FC = () => {
                 <h3 className="text-xl font-bold text-center mb-1">{character.name}</h3>
                 <p className="text-center text-muted-foreground mb-4">{character.speciality}</p>
                 <Button className="w-full" variant="outline" asChild>
-                  <Link to={`/explain`}>Choose Character</Link>
+                  <Link to={`/chat`}>Choose Character</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -78,7 +78,7 @@ const CharacterPreview: React.FC = () => {
       
       <div className="text-center mt-8">
         <Button size="lg" asChild>
-          <Link to="/characters">View All Characters</Link>
+          <Link to="/chat">View All Characters</Link>
         </Button>
       </div>
     </div>

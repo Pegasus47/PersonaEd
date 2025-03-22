@@ -10,7 +10,6 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "./ModeToggle";
 
 const NavigationHeader: React.FC = () => {
   return (
@@ -28,49 +27,34 @@ const NavigationHeader: React.FC = () => {
         </motion.div>
       </div>
 
-      <NavigationMenu>
+      <NavigationMenu className="justify-center center">
         <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuTrigger>Learn</NavigationMenuTrigger>
-            <NavigationMenuContent className="bg-white opacity-100 rounded-md border">
-              <ul className="grid gap-3 p-4 w-[400px]">
-                <li>
-                  <Link
-                    to="/characters"
-                    className={navigationMenuTriggerStyle()}
-                  >
-                    Characters
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/quiz" className={navigationMenuTriggerStyle()}>
-                    Quiz
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/resources"
-                    className={navigationMenuTriggerStyle()}
-                  >
-                    Resources
-                  </Link>
-                </li>
-              </ul>
-            </NavigationMenuContent>
+          <NavigationMenuItem className="flex-col flex items-end justify-center">
+            <Link to="/characters" className={navigationMenuTriggerStyle()}>
+              Characters
+            </Link>
           </NavigationMenuItem>
 
-          <NavigationMenuItem>
-            <Link to="/about" className={navigationMenuTriggerStyle()}>
-              About
+          <NavigationMenuItem className="flex-col flex items-end justify-center">
+            <Link to="/quiz" className={navigationMenuTriggerStyle()}>
+              Quiz
             </Link>
+          </NavigationMenuItem>
+
+          <NavigationMenuItem className="flex-col flex items-end justify-center">
+            <Link to="/resources" className={navigationMenuTriggerStyle()}>
+              Resources
+            </Link>
+          </NavigationMenuItem>
+
+
+            <NavigationMenuItem>
+              <Link to="/about" className={navigationMenuTriggerStyle()}>
+                About
+              </Link>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
-
-      <div className="flex items-center space-x-4">
-        <ModeToggle />
-        <Button>Sign In</Button>
-      </div>
     </motion.header>
   );
 };
