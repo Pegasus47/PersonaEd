@@ -68,7 +68,7 @@ const CharacterPreview: React.FC = () => {
                 <h3 className="text-xl font-bold text-center mb-1">{character.name}</h3>
                 <p className="text-center text-muted-foreground mb-4">{character.speciality}</p>
                 <Button className="w-full" variant="outline" asChild>
-                  <Link to={`/characters/${character.id}`}>Choose Character</Link>
+                  <Link to={`/explain`}>Choose Character</Link>
                 </Button>
               </CardContent>
             </Card>

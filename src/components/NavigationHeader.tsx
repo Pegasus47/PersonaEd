@@ -32,7 +32,7 @@ const NavigationHeader: React.FC = () => {
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuTrigger>Learn</NavigationMenuTrigger>
-            <NavigationMenuContent className="bg-white opacity-100 shadow-lg rounded-md border">
+            <NavigationMenuContent className="bg-white opacity-100 rounded-md border">
               <ul className="grid gap-3 p-4 w-[400px]">
                 <li>
                   <Link
