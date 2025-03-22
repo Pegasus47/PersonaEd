@@ -29,55 +29,43 @@ const Spinner: React.FC = () => (
   </div>
 );
 
-
-const Option: React.FC<{ option: string; isSelected: boolean; onSelect: () => void }> = ({ option, isSelected, onSelect }) => {
-  return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+const Option: React.FC<{
+  option: string;
+  isSelected: boolean;
+  onSelect: () => void;
+}> = ({ option, isSelected, onSelect }) => (
+  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+    <Card
+      className={`p-4 cursor-pointer transition-all ${
+        isSelected ? "border-blue-500 bg-primary/10" : "hover:border-primary/50"
+      }`}
+      onClick={onSelect}
     >
-      <Card
-        className={`p-4 cursor-pointer transition-all ${
-          isSelected
-            ? "border-blue-500 bg-primary/10"
-            : "hover:border-primary/50"
-        }`}
-        onClick={onSelect}
-      >
-        <p className="text-lg">{option}</p>
-      </Card>
-    </motion.div>
-  );
-};
+      <p className="text-lg">{option}</p>
+    </Card>
+  </motion.div>
+);
 
-const quizData = [
+const quizData = JSON.parse(localStorage.getItem("quiz") || "null") || [
   {
     question: "Who is Pythagoras?",
-    options: [
-      "A Greek philosopher",
-      "A Roman emperor",
-      "An Egyptian pharaoh"
-    ],
-    correct_answer: "A Greek philosopher"
+    options: ["A Greek philosopher", "A Roman emperor", "An Egyptian pharaoh"],
+    correct_answer: "A Greek philosopher",
   },
   {
     question: "What is the name of the theorem associated with Pythagoras?",
     options: [
       "Theorem of Euclid",
       "Theorem of Archimedes",
-      "Pythagorean Theorem"
+      "Pythagorean Theorem",
     ],
-    correct_answer: "Pythagorean Theorem"
+    correct_answer: "Pythagorean Theorem",
   },
   {
     question: "In which century did Pythagoras live?",
-    options: [
-      "5th century BC",
-      "10th century AD",
-      "15th century AD"
-    ],
-    correct_answer: "5th century BC"
-  }
+    options: ["5th century BC", "10th century AD", "15th century AD"],
+    correct_answer: "5th century BC",
+  },
 ];
 
 const QuizPage: React.FC = () => {
@@ -89,18 +77,22 @@ const QuizPage: React.FC = () => {
 
   const handleAnswerSelect = (answer: string) => {
     setSelectedAnswer(answer);
-    if (answer === quizData[currentQuestion].correct_answer) {
-      setScore(prev => prev + 1);
-    }
   };
 
   const handleNext = () => {
-    if (currentQuestion < quizData.length - 1) {
-      setCurrentQuestion(prev => prev + 1);
-      setSelectedAnswer(null);
-    } else {
-      setShowResults(true);
+    if (!selectedAnswer) return;
+
+    if (selectedAnswer === quizData[currentQuestion]?.correct_answer) {
+      setScore((prev) => prev + 1);
     }
+
+    setSelectedAnswer(null);
+
+    setCurrentQuestion((prev) => {
+      if (prev < quizData.length - 1) return prev + 1;
+      setShowResults(true);
+      return prev;
+    });
   };
 
   if (isLoading) {
@@ -114,7 +106,7 @@ const QuizPage: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-primary/10 to-secondary/10">
       <NavigationHeader />
-      
+
       <div className="container mx-auto px-6 py-12 flex-grow">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -131,13 +123,12 @@ const QuizPage: React.FC = () => {
                   exit={{ opacity: 0, x: -50 }}
                   transition={{ duration: 0.3 }}
                 >
-
                   <h1 className="text-3xl font-bold mb-8">
-                    {quizData[currentQuestion].question}
+                    {quizData[currentQuestion]?.question}
                   </h1>
 
                   <div className="grid gap-4 mb-8">
-                    {quizData[currentQuestion].options.map((option) => (
+                    {quizData[currentQuestion]?.options.map((option) => (
                       <Option
                         key={option}
                         option={option}
@@ -153,7 +144,9 @@ const QuizPage: React.FC = () => {
                       disabled={!selectedAnswer}
                       className="rounded-full px-8 py-4 text-lg"
                     >
-                      {currentQuestion === quizData.length - 1 ? "Finish" : "Next"}
+                      {currentQuestion === quizData.length - 1
+                        ? "Finish"
+                        : "Next"}
                     </Button>
                   </div>
                 </motion.div>

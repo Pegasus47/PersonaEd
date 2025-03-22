@@ -1,39 +1,40 @@
-import React, { useEffect, useState } from "react";
-//import { useSearchParams } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import NavigationHeader from "@/components/NavigationHeader";
-import { backendUrl, generateSessionEndpoint } from "./utils/constants";
-import { Volume2 } from "lucide-react";
+import {
+  backendUrl,
+  generateSessionEndpoint,
+  generateVoiceEndpoint,
+} from "./utils/constants";
+
+import { Volume2, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
 
 interface Dialogue {
   speaker: string;
-  pose: string;
+  photo_url: string;
   dialogue: string;
   blackboard: string;
 }
 
-const characterImages: Record<string, string> = {
-  "Harry Potter": "src/assets/harryPotterImg.png",
-  Hermione: "src/assets/hermioneIMG.png",
-};
-
 const ExplanationPage: React.FC = () => {
-  //const [searchParams] = useSearchParams();
-  //const selectedCharacter = searchParams.get("character") || "Harry Potter";
-
-  const selectedCharacter = localStorage.getItem("selectedCharacter")|| "Harry Potter";
-
   const topic = localStorage.getItem("topic") || "default";
+  const character_1 =
+    localStorage.getItem("character_1") || "Default Character 1";
+  const character_2 =
+    localStorage.getItem("character_2") || "Default Character 2";
+
   const [dialogues, setDialogues] = useState<Dialogue[]>([]);
   const [dialogueIndex, setDialogueIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const didFetch = useRef(false);
 
   useEffect(() => {
+    if (didFetch.current) return;
+    didFetch.current = true;
     const fetchDialogues = async () => {
       setLoading(true);
       try {
@@ -44,13 +45,14 @@ const ExplanationPage: React.FC = () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               topic_prompt: topic,
-              character_1: selectedCharacter,
-              character_2: "Hermione",
+              character_1: character_1,
+              character_2: character_2,
             }),
           }
         );
         const data = await response.json();
         console.log(data);
+        localStorage.setItem("quiz", JSON.stringify(data.quiz));
         setDialogues(data.script || []);
       } catch (error) {
         console.error("Error fetching dialogues:", error);
@@ -59,7 +61,7 @@ const ExplanationPage: React.FC = () => {
       }
     };
     fetchDialogues();
-  }, [topic, selectedCharacter]);
+  }, [topic, character_1, character_2]);
 
   useEffect(() => {
     const fetchVoice = async () => {
@@ -67,7 +69,7 @@ const ExplanationPage: React.FC = () => {
       const currentDialogue = dialogues[dialogueIndex];
 
       try {
-        const response = await fetch(`${backendUrl}/session/generate-voice/`, {
+        const response = await fetch(`${backendUrl}${generateVoiceEndpoint}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -98,14 +100,14 @@ const ExplanationPage: React.FC = () => {
     setDialogueIndex((prev) => Math.max(prev - 1, 0));
 
   const currentDialogue = dialogues[dialogueIndex];
-  const isLeft = currentDialogue?.speaker === selectedCharacter;
+  const isLeft = currentDialogue?.speaker === "Harry Potter";
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
       <NavigationHeader />
       <div className="container mx-auto px-6 py-12 flex-grow flex flex-col">
         <h2 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-          Learning with {selectedCharacter}
+          Learning {topic} with {character_1} and {character_2}
         </h2>
 
         {loading ? (
@@ -122,7 +124,7 @@ const ExplanationPage: React.FC = () => {
                 className="relative z-10"
               >
                 <img
-                  src={characterImages[currentDialogue?.speaker]}
+                  src={currentDialogue?.photo_url}
                   alt={currentDialogue?.speaker}
                   className="h-72 object-contain"
                 />
@@ -138,9 +140,7 @@ const ExplanationPage: React.FC = () => {
                   >
                     <Card className="p-4 bg-white/90 backdrop-blur-xs shadow-lg rounded-2xl relative ">
                       <p className="text-sm">{currentDialogue?.dialogue}</p>
-                      <p className="text-xs text-gray-500">
-                        ({currentDialogue?.pose})
-                      </p>
+
                       {audioUrl && (
                         <button
                           onClick={() => {
@@ -194,14 +194,19 @@ const ExplanationPage: React.FC = () => {
                 Next →
               </Button>
             </div>
+            <Button
+              size="sm"
+              className="gap-2 fixed bottom-0 right-0 mb-4 mr-4"
+              asChild
+              variant="outline"
+            >
+              <Link to="/quiz">
+                Go to Quiz <ChevronRight className="h-4 w-4" />
+              </Link>
+            </Button>
           </>
         )}
-        <Button size="sm" className= "gap-2 fixed bottom-0 right-0 mb-4 mr-4" asChild variant="outline">
-            <Link to="/quiz">
-                Go to Quiz <ChevronRight className="h-4 w-4" />
-            </Link>
-        </Button>
-        </div>
+      </div>
     </div>
   );
 };

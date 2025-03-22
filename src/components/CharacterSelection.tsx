@@ -1,67 +1,52 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "./ui/button";
 import NavigationHeader from "@/components/NavigationHeader";
 import { Spinner } from "./LoadingSpinner";
-import ExplanationPage from "@/CharacterDialogues";
+import { backendUrl, charactersEndpoint } from "@/utils/constants";
+import { Check } from "lucide-react";
 
-const characters = [
-  {
-    name: "Harry Potter",
-    image: "src/assets/np.jpg",
-    specialty: "Magical Education",
-  },
-  {
-    name: "Star Wars",
-    image: "src/assets/starwars.jpg",
-    specialty: "Galactic History",
-  },
-  {
-    name: "Marvel Universe",
-    image: "src/assets/marvel.jpg",
-    specialty: "Superhero Science",
-  },
-  {
-    name: "DC Universe",
-    image: "src/assets/dc.jpeg",
-    specialty: "Mythic Archetypes",
-  },
-  {
-    name: "Sherlock Holmes",
-    image: "src/assets/sherlock.jpeg",
-    specialty: "Deductive Reasoning",
-  },
-  {
-    name: "Star Trek",
-    image: "src/assets/starTrek.jpeg",
-    specialty: "Space Exploration",
-  },
-  {
-    name: "Frozen",
-    image: "src/assets/frozen.jpeg",
-    specialty: "Nordic Culture",
-  },
-  {
-    name: "Family Guy",
-    image: "src/assets/FamilyGuy.webp",
-    specialty: "Modern Satire",
-  },
-];
+interface Character {
+  name: string;
+  voice_id: string;
+  photo_url: string;
+}
 
 const CharacterSelection: React.FC = () => {
   const navigate = useNavigate();
+  const [characters, setCharacters] = useState<Character[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedCharacters, setSelectedCharacters] = useState<string[]>([]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1500);
-    return () => clearTimeout(timer);
+    fetch(`${backendUrl}${charactersEndpoint}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setCharacters(data);
+        setIsLoading(false);
+      })
+      .catch(() => setIsLoading(false));
   }, []);
 
   const handleCharacterSelect = (characterName: string) => {
-    localStorage.setItem("selectedCharacter", characterName);
-    navigate("/explain");
+    setSelectedCharacters((prev) => {
+      if (prev.includes(characterName)) {
+        return prev.filter((name) => name !== characterName);
+      } else if (prev.length < 2) {
+        return [...prev, characterName];
+      }
+      return prev;
+    });
+  };
+
+  const proceed = () => {
+    if (selectedCharacters.length === 2) {
+      localStorage.setItem("character_1", selectedCharacters[0]);
+      localStorage.setItem("character_2", selectedCharacters[1]);
+      navigate("/explain");
+    }
   };
 
   if (isLoading) return <Spinner />;
@@ -69,7 +54,6 @@ const CharacterSelection: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-primary/10 to-secondary/10">
       <NavigationHeader />
-
       <div className="container mx-auto px-6 py-24 flex-grow">
         <motion.div
           initial={{ opacity: 0 }}
@@ -78,53 +62,98 @@ const CharacterSelection: React.FC = () => {
           className="max-w-7xl mx-auto"
         >
           <h2 className="text-4xl font-bold text-center mb-2">
-            Choose Your Learning Mentor
+            Choose Your Learning Mentors
           </h2>
           <p className="text-center text-muted-foreground mb-12 text-lg">
-            Select a character to embark on your personalized learning adventure
+            Select two characters to embark on your learning adventure
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
-            {characters.map((character, index) => (
-              <motion.div
-                key={character.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="w-full max-w-xs"
-              >
-                <Card
-                  className="overflow-hidden h-full border-2 hover:border-primary hover:shadow-2xl transition-all duration-300 group cursor-pointer"
-                  onClick={() => handleCharacterSelect(character.name)}
+            {characters.map((character) => {
+              const isSelected = selectedCharacters.includes(character.name);
+              const selectedIndex = selectedCharacters.indexOf(character.name);
+
+              return (
+                <motion.div
+                  key={character.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="relative w-full max-w-xs"
                 >
-                  <div className="relative aspect-[3/4]">
-                    <img
-                      src={character.image}
-                      alt={character.name}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 text-white">
-                      <h3 className="text-2xl font-bold mb-2">
-                        {character.name}
-                      </h3>
-                      <p className="text-sm mb-3 font-medium">
-                        {character.specialty}
-                      </p>
+                  <Card
+                    className={`relative overflow-hidden h-[350px] w-[220px] cursor-pointer transition-all duration-300 ${
+                      isSelected
+                        ? "ring-4 ring-primary shadow-lg scale-105"
+                        : "hover:border-primary hover:shadow-md"
+                    }`}
+                    onClick={() => handleCharacterSelect(character.name)}
+                  >
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      {/* Character image with overlay for selected state */}
+                      <div className="relative w-full h-full">
+                        <img
+                          src={character.photo_url}
+                          alt={character.name}
+                          className={`w-full h-full  rounded-lg transition-all duration-300 ${
+                            isSelected ? "brightness-90" : ""
+                          }`}
+                        />
+
+                        {/* Overlay for selected state */}
+                        {isSelected && (
+                          <div className="absolute inset-0 bg-primary/20 rounded-lg" />
+                        )}
+                      </div>
+
+                      {/* Selection badge */}
+                      {isSelected && (
+                        <div className="absolute -top-3 right-3 bg-primary text-black text-lg font-bold rounded-full w-8 h-8 flex items-center justify-center shadow-md z-10">
+                          {selectedIndex + 1}
+                        </div>
+                      )}
+
+                      {/* Selection checkmark */}
+                      {isSelected && (
+                        <div className="absolute -top-3 left-3 bg-primary text-black rounded-full p-1 shadow-md z-10">
+                          <Check size={18} />
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
+
+                    {/* Character name */}
+                    <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/80 via-black/50 to-transparent p-4 text-white">
+                      <h3 className="text-lg font-bold">{character.name}</h3>
+                    </div>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </div>
 
           <div className="text-center mt-16">
             <Button
-              variant="outline"
+              variant="default"
               size="lg"
-              className="rounded-full font-semibold hover:bg-primary hover:text-primary-foreground transition-colors duration-300"
+              className={`rounded-full font-semibold transition-all duration-300 ${
+                selectedCharacters.length === 2
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md scale-105 cursor-pointer"
+                  : "opacity-50"
+              }`}
+              onClick={proceed}
+              disabled={selectedCharacters.length !== 2}
             >
-              Explore More Characters
+              {selectedCharacters.length === 2
+                ? "Continue with Selected Characters"
+                : `Select ${2 - selectedCharacters.length} more character${
+                    selectedCharacters.length === 1 ? "" : "s"
+                  }`}
             </Button>
+            {selectedCharacters.length > 0 && (
+              <p className="text-sm text-muted-foreground mt-2">
+                Selected: {selectedCharacters.join(" & ")}
+              </p>
+            )}
           </div>
         </motion.div>
       </div>

@@ -3,3 +3,4 @@ export const backendUrl: string =
 
 export const generateSessionEndpoint = `/session/generate`;
 export const generateVoiceEndpoint = `/session/generate-voice`;
+export const charactersEndpoint = `/characters`;
