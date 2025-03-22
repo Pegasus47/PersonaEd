@@ -128,7 +128,7 @@ const QuizPage: React.FC = () => {
                   </h1>
 
                   <div className="grid gap-4 mb-8">
-                    {quizData[currentQuestion]?.options.map((option) => (
+                    {quizData[currentQuestion]?.options.map((option:any) => (
                       <Option
                         key={option}
                         option={option}
