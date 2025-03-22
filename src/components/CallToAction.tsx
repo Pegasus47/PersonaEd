@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 const CallToAction: React.FC = () => {
   return (
     <div className="relative py-16 overflow-hidden">
-      {/* Animated blur background */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute top-0 left-1/4 w-96 h-96 bg-primary rounded-full opacity-10 blur-3xl"

@@ -6,6 +6,8 @@ import { Card } from "@/components/ui/card";
 import NavigationHeader from "@/components/NavigationHeader";
 import { backendUrl, generateSessionEndpoint } from "./utils/constants";
 import { Volume2 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
 
 interface Dialogue {
   speaker: string;
@@ -194,7 +196,12 @@ const ExplanationPage: React.FC = () => {
             </div>
           </>
         )}
-      </div>
+        <Button size="sm" className= "gap-2 fixed bottom-0 right-0 mb-4 mr-4" asChild variant="outline">
+            <Link to="/quiz">
+                Go to Quiz <ChevronRight className="h-4 w-4" />
+            </Link>
+        </Button>
+        </div>
     </div>
   );
 };

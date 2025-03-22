@@ -4,6 +4,7 @@ import LandingPage from "./LandingPage";
 import CharacterSelection from "./components/CharacterSelection";
 import CommandSection from "./components/CommandSection";
 import ExplanationPage from "./CharacterDialogues";
+import QuizPage from "./QuizPage";
 const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -12,6 +13,7 @@ const App: React.FC = () => {
         <Route path="/characters" element={<CharacterSelection />} />
         <Route path="/chat" element={<CommandSection />} />
         <Route path="/explain" element={<ExplanationPage />} />
+        <Route path ="/quiz" element={<QuizPage/>}/>
       </Routes>
     </BrowserRouter>
   );
