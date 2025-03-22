@@ -1,6 +1,5 @@
 // LandingPage.tsx
 import React from "react";
-import { ThemeProvider } from "./components/ThemeProvider";
 import NavigationHeader from "./components/NavigationHeader";
 import HeroSection from "./components/HeroSection";
 //import CommandSection from "./components/CommandSection";
@@ -11,18 +10,16 @@ import Footer from "./components/Footer";
 
 const LandingPage: React.FC = () => {
   return (
-    <ThemeProvider defaultTheme="system">
-      <div className="min-h-screen flex flex-col">
-        <NavigationHeader />
-        <main className="flex-grow">
-          <HeroSection />
-          <FeaturesSection />
-          <CharacterPreview />
-          <CallToAction />
-        </main>
-        <Footer />
-      </div>
-    </ThemeProvider>
+    <div className="min-h-screen flex flex-col">
+      <NavigationHeader />
+      <main className="flex-grow">
+        <HeroSection />
+        <FeaturesSection />
+        <CharacterPreview />
+        <CallToAction />
+      </main>
+      <Footer />
+    </div>
   );
 };
 

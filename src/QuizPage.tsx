@@ -46,29 +46,33 @@ const Option: React.FC<{
   </motion.div>
 );
 
-const quizData = JSON.parse(localStorage.getItem("quiz") || "null") || [
-  {
-    question: "Who is Pythagoras?",
-    options: ["A Greek philosopher", "A Roman emperor", "An Egyptian pharaoh"],
-    correct_answer: "A Greek philosopher",
-  },
-  {
-    question: "What is the name of the theorem associated with Pythagoras?",
-    options: [
-      "Theorem of Euclid",
-      "Theorem of Archimedes",
-      "Pythagorean Theorem",
-    ],
-    correct_answer: "Pythagorean Theorem",
-  },
-  {
-    question: "In which century did Pythagoras live?",
-    options: ["5th century BC", "10th century AD", "15th century AD"],
-    correct_answer: "5th century BC",
-  },
-];
-
 const QuizPage: React.FC = () => {
+  const quizData = JSON.parse(localStorage.getItem("quiz") || "null") || [
+    {
+      question: "Who is Pythagoras?",
+      options: [
+        "A Greek philosopher",
+        "A Roman emperor",
+        "An Egyptian pharaoh",
+      ],
+      correct_answer: "A Greek philosopher",
+    },
+    {
+      question: "What is the name of the theorem associated with Pythagoras?",
+      options: [
+        "Theorem of Euclid",
+        "Theorem of Archimedes",
+        "Pythagorean Theorem",
+      ],
+      correct_answer: "Pythagorean Theorem",
+    },
+    {
+      question: "In which century did Pythagoras live?",
+      options: ["5th century BC", "10th century AD", "15th century AD"],
+      correct_answer: "5th century BC",
+    },
+  ];
+
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [score, setScore] = useState(0);
@@ -128,7 +132,7 @@ const QuizPage: React.FC = () => {
                   </h1>
 
                   <div className="grid gap-4 mb-8">
-                    {quizData[currentQuestion]?.options.map((option:any) => (
+                    {quizData[currentQuestion]?.options.map((option: any) => (
                       <Option
                         key={option}
                         option={option}
