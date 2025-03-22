@@ -106,6 +106,10 @@ const ExplanationPage: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-slate-50">
       <NavigationHeader />
       <div className="container mx-auto px-6 py-12 flex-grow flex flex-col">
+        <h2 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+          Learning {topic} with {character_1} and {character_2}
+        </h2>
+
         {loading ? (
           <div className="flex justify-center items-center h-64 text-2xl font-bold">
             Loading dialogues...
@@ -162,7 +166,7 @@ const ExplanationPage: React.FC = () => {
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="relative w-[700px] h-[400px] bg-[url('/blackboard-texture.jpg')] bg-cover rounded-xl shadow-2xl border-8 border-slate-700"
+                className="relative w-[700px] h-[400px] bg-cover rounded-xl shadow-2xl border-8 border-slate-700"
               >
                 <div className="p-8 h-full flex items-center justify-center">
                   <pre className="text-2xl font-bold text-blue font-mono whitespace-pre-wrap text-center">
