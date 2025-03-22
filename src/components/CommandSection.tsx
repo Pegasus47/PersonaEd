@@ -23,7 +23,23 @@ const CommandSection: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    // Process input or file
+    localStorage.setItem("topic", input);
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        localStorage.setItem("file", reader.result as string);
+        navigate("/characters");
+      };
+      reader.onerror = () => {
+        console.error("Failed to read file.");
+        navigate("/characters");
+      };
+      reader.readAsDataURL(file);
+      return;
+    } else {
+      localStorage.removeItem("file");
+    }
+
     navigate("/characters");
   };
 
@@ -32,73 +48,74 @@ const CommandSection: React.FC = () => {
       <NavigationHeader />
 
       <div className="container mx-auto px-4 py-12 max-w-3xl">
-      
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <h2 className="text-3xl font-bold text-center mb-2">Start Your Learning Journey</h2>
-        <p className="text-center text-muted-foreground mb-8">
-          Enter a command or upload a PDF to begin your personalized learning experience.
-        </p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-3xl font-bold text-center mb-2">
+            Start Your Learning Journey
+          </h2>
+          <p className="text-center text-muted-foreground mb-8">
+            Enter a topic or upload a PDF to begin your personalized learning
+            experience.
+          </p>
 
-        <Card className="backdrop-blur-sm bg-background/80 border shadow-lg p-4">
-          <div className="relative">
-            <Input
-              type="text"
-              value={input}
-              onChange={handleInputChange}
-              placeholder="Type your learning command or question here..."
-              className="pr-24 py-6 text-lg"
-            />
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
-              <label htmlFor="file-upload" className="cursor-pointer">
-                <Upload className="h-6 w-6 text-muted-foreground hover:text-primary transition-colors" />
-              </label>
+          <Card className="backdrop-blur-sm bg-background/80 border shadow-lg p-4">
+            <div className="relative">
               <Input
-                id="file-upload"
-                type="file"
-                accept=".pdf"
-                onChange={handleFileChange}
-                className="hidden"
+                type="text"
+                value={input}
+                onChange={handleInputChange}
+                placeholder="Type what you want to learn here..."
+                className="pr-24 py-6 text-lg"
               />
-              <Button 
-                onClick={handleSubmit} 
-                size="icon"
-                className="rounded-full"
-              >
-                <Send className="h-4 w-4" />
-              </Button>
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                <label htmlFor="file-upload" className="cursor-pointer">
+                  <Upload className="h-6 w-6 text-muted-foreground hover:text-primary transition-colors" />
+                </label>
+                <Input
+                  id="file-upload"
+                  type="file"
+                  accept=".pdf"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                <Button
+                  onClick={handleSubmit}
+                  size="icon"
+                  className="rounded-full"
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
-          </div>
-          {file && (
-            <div className="mt-4 flex items-center gap-2 p-2 rounded-lg bg-muted">
-              <span className="text-sm truncate flex-grow">{file.name}</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setFile(null)}
-                className="p-1"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          )}
-        </Card>
+            {file && (
+              <div className="mt-4 flex items-center gap-2 p-2 rounded-lg bg-muted">
+                <span className="text-sm truncate flex-grow">{file.name}</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setFile(null)}
+                  className="p-1"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </Card>
 
-        <div className="mt-8 text-center text-sm text-muted-foreground">
-          <p>Examples:</p>
-          <ul className="mt-2 space-y-2">
-            <li>"Explain quantum entanglement in simple terms"</li>
-            <li>"What are the key events of the Renaissance period?"</li>
-            <li>"How does photosynthesis work?"</li>
-          </ul>
-        </div>
-      </motion.div>
+          <div className="mt-8 text-center text-sm text-muted-foreground">
+            <p>Examples:</p>
+            <ul className="mt-2 space-y-2">
+              <li>"Explain quantum entanglement in simple terms"</li>
+              <li>"What are the key events of the Renaissance period?"</li>
+              <li>"How does photosynthesis work?"</li>
+            </ul>
+          </div>
+        </motion.div>
+      </div>
     </div>
-    </div>
-    
   );
 };
 
