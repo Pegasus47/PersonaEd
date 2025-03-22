@@ -3,13 +3,10 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { Button } from "@/components/ui/button";
 
 const NavigationHeader: React.FC = () => {
   return (
@@ -47,11 +44,10 @@ const NavigationHeader: React.FC = () => {
             </Link>
           </NavigationMenuItem>
 
-
-            <NavigationMenuItem>
-              <Link to="/about" className={navigationMenuTriggerStyle()}>
-                About
-              </Link>
+          <NavigationMenuItem>
+            <Link to="/about" className={navigationMenuTriggerStyle()}>
+              About
+            </Link>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
