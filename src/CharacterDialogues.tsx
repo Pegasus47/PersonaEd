@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import NavigationHeader from "@/components/NavigationHeader";
 import { backendUrl, generateSessionEndpoint } from "./utils/constants";
+import { Volume2 } from "lucide-react";
 
 interface Dialogue {
   speaker: string;
@@ -25,6 +26,7 @@ const ExplanationPage: React.FC = () => {
   const [dialogues, setDialogues] = useState<Dialogue[]>([]);
   const [dialogueIndex, setDialogueIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchDialogues = async () => {
@@ -53,6 +55,37 @@ const ExplanationPage: React.FC = () => {
     };
     fetchDialogues();
   }, [topic, selectedCharacter]);
+
+  useEffect(() => {
+    const fetchVoice = async () => {
+      if (!dialogues.length) return;
+      const currentDialogue = dialogues[dialogueIndex];
+
+      try {
+        const response = await fetch(`${backendUrl}/session/generate-voice/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            character: currentDialogue.speaker,
+            text: currentDialogue.dialogue,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to generate voice");
+        }
+
+        // Convert response stream to audio blob
+        const audioBlob = await response.blob();
+        const url = URL.createObjectURL(audioBlob);
+        setAudioUrl(url);
+      } catch (error) {
+        console.error("Error fetching voice:", error);
+      }
+    };
+
+    fetchVoice();
+  }, [dialogueIndex, dialogues]);
 
   const handleNext = () =>
     setDialogueIndex((prev) => Math.min(prev + 1, dialogues.length - 1));
@@ -103,6 +136,17 @@ const ExplanationPage: React.FC = () => {
                       <p className="text-xs text-gray-500">
                         ({currentDialogue?.pose})
                       </p>
+                      {audioUrl && (
+                        <button
+                          onClick={() => {
+                            const audio = new Audio(audioUrl);
+                            audio.play();
+                          }}
+                          className="absolute bottom-2 right-2 p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition"
+                        >
+                          <Volume2 className="w-5 h-5 text-gray-700" />
+                        </button>
+                      )}
                       <div
                         className={`absolute -bottom-4 ${
                           isLeft ? "left-6" : "right-6"
