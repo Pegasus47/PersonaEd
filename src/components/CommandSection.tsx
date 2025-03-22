@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Send, Upload, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import NavigationHeader from "./NavigationHeader";
+import { backendUrl, pdfEndpoint } from "@/utils/constants";
 
 const CommandSection: React.FC = () => {
   const [input, setInput] = useState("");
@@ -25,17 +26,29 @@ const CommandSection: React.FC = () => {
   const handleSubmit = () => {
     localStorage.setItem("topic", input);
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        localStorage.setItem("file", reader.result as string);
-        navigate("/characters");
-      };
-      reader.onerror = () => {
-        console.error("Failed to read file.");
-        navigate("/characters");
-      };
-      reader.readAsDataURL(file);
-      return;
+      const formData = new FormData();
+      formData.append("file", file);
+      fetch(`${backendUrl}${pdfEndpoint}`, {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => {
+          if (!response.ok) {
+            console.error("Upload failed:", response.statusText);
+          }
+          return response.json();
+        })
+        .then((jsonData) => {
+          console.log("Response JSON:", jsonData);
+          localStorage.setItem(
+            "topic",
+            localStorage.getItem("topic") || "" + jsonData.summary
+          );
+        })
+        .catch((error) => {
+          console.error("Error uploading file:", error);
+          return;
+        });
     } else {
       localStorage.removeItem("file");
     }
