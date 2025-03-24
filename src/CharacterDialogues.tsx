@@ -106,10 +106,6 @@ const ExplanationPage: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-slate-50">
       <NavigationHeader />
       <div className="container mx-auto px-6 py-12 flex-grow flex flex-col">
-        <h2 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-          Learning {topic} with {character_1} and {character_2}
-        </h2>
-
         {loading ? (
           <div className="flex justify-center items-center h-64 text-2xl font-bold">
             Loading dialogues...
